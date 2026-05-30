@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { retornaLeads } from './servico/retornaLeads.js';
 import { GeraToken } from './servico/servico_autenticacao.js'
-import { validaDadosAutenticacao } from './valicacao/valida_autenticacao.js';
+import { validaDadosAutenticacao } from './validacao/valida_autenticacao.js';
+import { validaToken } from './validacao/valida_token.js';
 
 
 
@@ -28,7 +29,7 @@ app.post('/login', async(req, res) => {
 
 })
 
-app.get('lista-leads', async(req, res) => {
+app.get('/lista-leads', async(req, res) => {
     let token;
 
     if(typeof req.headers.authorization !== 'undefined'){
@@ -38,6 +39,16 @@ app.get('lista-leads', async(req, res) => {
         token = -1;
     }
 
+    const tokenValido = validaToken(token);
+
+    if(!tokenValido.status) {
+        res.status(tokenValido.codigo).send({mensagem: "Usuário não autorizado"});
+        return;
+    }
+
+    const listaLeads = await retornaLeads();
+
+    res.status(tokenValido.codigo).send({listaLeads});
 
 })
 
