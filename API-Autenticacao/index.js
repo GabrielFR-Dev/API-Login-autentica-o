@@ -1,19 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import { retornaLeads } from './servico/retornaLeads.js';
+import { GeraToken } from './servico/servico_autenticacao.js'
 import { validaDadosAutenticacao } from './valicacao/valida_autenticacao.js';
+
 
 
 const app = express();
 app.use(cors());
-
-app.get('/leads', async(req, res) => {
-    
-    const leads = await retornaLeads();
-
-    res.json(leads)
-
-})
+app.use(express.json())
 
 
 app.post('/login', async(req, res) => {
@@ -26,6 +21,10 @@ app.post('/login', async(req, res) => {
         res.status(401).send({mensagem: "Usuário não autorizado"});
         return;
     }
+
+    const token = GeraToken();
+
+    res.status(200).send({token: token});
 
 })
 
