@@ -28,6 +28,19 @@ app.post('/login', async(req, res) => {
 
 })
 
+app.get('lista-leads', async(req, res) => {
+    let token;
+
+    if(typeof req.headers.authorization !== 'undefined'){
+        token = req.headers.authorization.split(' ')[1];
+    }
+    else {
+        token = -1;
+    }
+
+
+})
+
 
 
 
