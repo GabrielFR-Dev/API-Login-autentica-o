@@ -1,19 +1,22 @@
 import express from 'express';
 import cors from 'cors';
-import pool from './servico/conexao.js';
+import { retornaLeads } from './servico/retornaLeads.js';
 
 
 const app = express();
 app.use(cors());
 
+app.get('/leads', async(req, res) => {
+    
+    const leads = await retornaLeads();
+
+    res.json(leads)
+
+})
+
 
 app.listen(3001, async() => {
-    const data = new Date();
     
-    const conexao = await pool.getConnection();
-
+    const data = new Date();
     console.log(`Servidor iniciado em ${data}`);
-    console.log(conexao.threadId);
-
-    conexao.release();
 })
